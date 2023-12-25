@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs"; //libreria que nos ayuda a encriptar las contrase
 import { createAccessToken } from "../libs/jwt.js"; //importamos la funcion que hemos creado para crear el token
 
 export const register = async (req, res) => {
-  const {username, email, password } = req.body;
+  const {username, email, password, role} = req.body;
 
   try {
     const passwordHash = await bcrypt.hash(password, 10);
@@ -12,14 +12,16 @@ export const register = async (req, res) => {
       username,
       email,
       password: passwordHash, //le decimos que la contraseña es nuestra contraseña encriptada
+      role,
     });
     const userSaved = await newUser.save(); //guardamos el nuevo usuario en la base de datos
-    const token = await createAccessToken({ id: userSaved._id }); //creamos el token
+    const token = await createAccessToken({ id: userSaved._id, role: userSaved.role }); //creamos el token
     res.cookie("token", token); //guardamos el token en una cookie
     res.status(201).json({
       _id: userSaved._id,
       username: userSaved.username,
       email: userSaved.email,
+      role: userSaved.role,
     });
   } catch (e) {
     res.status(500).json({ message: e.message });
@@ -31,14 +33,14 @@ export const login = async (req, res) => {
   try {
     const userFound = await User.findOne({ email }); //buscamos el usuario en la base de datos
 
-    if (!userFound) res.status(400).json({ message: "User not found" }); //si el usuario no está en la base de datos, devolvemos un error
+    if (!userFound) return res.status(400).json({ message: "User not found" }); //si el usuario no está en la base de datos, devolvemos un error
 
     const isMatch = await bcrypt.compare(password, userFound.password); //comparamos la contraseña que tenemos con la que nos ingresa
 
     if (!isMatch)
       return res.status(400).json({ message: "Incorrect password" }); //si la contraseña no es correcta, devolvemos un error
 
-    const token = await createAccessToken({id: userFound._id})  //creamos el token del usuario registrado
+    const token = await createAccessToken({id: userFound._id, role: userFound.role})  //creamos el token del usuario registrado
 
     res.cookie("token", token);   //guardamos el token en una cookie y lo enviamos en la respuesta
 
@@ -46,6 +48,7 @@ export const login = async (req, res) => {
       id: userFound._id,
       username: userFound.username,
       email: userFound.email,
+      role: userFound.role,
     })
 
   } catch (e) {
@@ -71,3 +74,8 @@ export const profile = async (req, res) => {
   })
 
 };
+export const admin = async (req, res) =>{
+  //envia una lista de todos los usuarios
+  const users = await User.find();
+  res.json(users);
+}

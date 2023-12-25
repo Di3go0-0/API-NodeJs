@@ -15,6 +15,10 @@ const userSchema = new mongoose.Schema({
     password:{
         type: String, //Se especifaca el tipo de dato
         required: true, //Se especifica que es requerido
+    }, //haz una seccion para ver si es usuario o admin
+    role:{
+        type : String, //Se especifica el tipo de dato
+        required : true, //Se especifica que es requerido
     }
 },
 {
