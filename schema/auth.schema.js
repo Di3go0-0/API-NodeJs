@@ -21,6 +21,7 @@ export const registerSchema = z.object({
                     "The password must contain at least one uppercase letter, one lowercase letter, and one number",
             }
         ),
+    role: z.enum(["admin", "user"]),
 });
 
 export const loginSchema = z.object({
@@ -36,19 +37,4 @@ export const loginSchema = z.object({
         .min(8, {
             message: "The password must be at least 8 characters long",
         }),
-});
-
-export const loginSchmea = z.object({
-  email: z
-    .string({
-      required_error: "The email is required",
-    })
-    .email({ message: "The email is invalid" }), // El nombre de usuario debe tener al menos 5 caracteres y debe ser obligatorio
-  password: z
-    .string({
-      required_error: "The password is required",
-    })
-    .min(8, {
-      message: "The password must be at least 8 characters long",
-    }),
 });

@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs"; //libreria que nos ayuda a encriptar las contrase
 import { createAccessToken } from "../libs/jwt.js"; //importamos la funcion que hemos creado para crear el token
 
 export const register = async (req, res) => {
-  const {username, email, password } = req.body;
+  const {username, email, password, role } = req.body;
 
   try {
     const passwordHash = await bcrypt.hash(password, 10);
@@ -12,14 +12,20 @@ export const register = async (req, res) => {
       username,
       email,
       password: passwordHash, //le decimos que la contraseña es nuestra contraseña encriptada
+      role,
     });
     const userSaved = await newUser.save(); //guardamos el nuevo usuario en la base de datos
-    const token = await createAccessToken({ id: userSaved._id }); //creamos el token
-    res.cookie("token", token); //guardamos el token en una cookie
+    const token = await createAccessToken({ id: userSaved._id }); //creamos el token de la id
+    const tokenRole = await createAccessToken({ role: userSaved.role}); //creamos el token de la id
+    //envia una cookie con el token y el tokenROle
+    res.cookie("token", token);
+    res.cookie("tokenRole", tokenRole);
+
     res.status(201).json({
       _id: userSaved._id,
       username: userSaved.username,
       email: userSaved.email,
+      role: userSaved.role,
     });
   } catch (e) {
     res.status(500).json({ message: e.message });
@@ -27,7 +33,7 @@ export const register = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-  const {email, password } = req.body;
+  const {email, password, role} = req.body;
   try {
     const userFound = await User.findOne({ email }); //buscamos el usuario en la base de datos
 
@@ -39,8 +45,10 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: "Incorrect password" }); //si la contraseña no es correcta, devolvemos un error
 
     const token = await createAccessToken({id: userFound._id})  //creamos el token del usuario registrado
+    const tokenRole = await createAccessToken({role: userFound.role})  //creamos el token del usuario registrado
 
     res.cookie("token", token);   //guardamos el token en una cookie y lo enviamos en la respuesta
+    res.cookie("tokenRole", tokenRole);   //guardamos el token en una cookie y lo enviamos en la respuesta
 
     res.status(201).json({  //enviamos la respuesta con el usuario registrado
       id: userFound._id,
@@ -71,3 +79,8 @@ export const profile = async (req, res) => {
   })
 
 };
+
+export const getUsers = async (req, res) => {
+  const users = await User.find();
+  res.json(users);
+}

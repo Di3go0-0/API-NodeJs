@@ -10,7 +10,7 @@ export const authRequired = (req, res, next) => {
     //verificamos el token
     if (err) return res.status(403).json({ message: "Invalid token" }); //si hay un error, devolvemos un error
 
-    console.log(user); //si no hay error, imprimimos el usuario que nos devuelve el token
+    // console.log(user); //si no hay error, imprimimos el usuario que nos devuelve el token
     req.user = user; //guardamos el usuario en req.user
     next(); //llamamos a next para que continue con la siguiente función
   });
