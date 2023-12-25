@@ -1,0 +1,1 @@
+export const TOKEN_SECRET = "2p^G@2NKjojU8ibL"

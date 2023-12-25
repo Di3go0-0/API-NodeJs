@@ -1,0 +1,6 @@
+{
+    "Users": "/api",
+    "Register": "/api/register",
+    "login": "/api/login",
+    "logout": "/api/logout"
+}
