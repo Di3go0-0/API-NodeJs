@@ -4,7 +4,7 @@ import { TOKEN_SECRET } from "../config.js"; // importamos la clave secreta del 
 export const authRequired = (req, res, next) => {
   const { token } = req.cookies; //extraemos el token de las cookies
 
-  if (!token) return res.status(401).json({ message: "Unauthorized" }); //si no hay token, devolvemos un error
+  if (!token) return res.status(401).json({ message: "You need to log in first" }); //si no hay token, devolvemos un error
 
   jwt.verify(token, TOKEN_SECRET, (err, user) => {
     //verificamos el token

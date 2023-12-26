@@ -1,6 +1,8 @@
 {
     "Users": "/api",
+    "register Admin": "/api/register/admin tener en cuenta que solo puede acceder a este endpoint un usuario con rol admin",
     "Register": "/api/register",
     "login": "/api/login",
-    "logout": "/api/logout"
+    "logout": "/api/logout",
+    "profile": "/api/profile tener en cuenta que solo puede acceder a este endpoint un usuario logueado"
 }
