@@ -2,6 +2,11 @@ import jwt from "jsonwebtoken"; //importamos la librería de jsonwebtoken porque
 import { TOKEN_SECRET } from "../config.js"; // importamos la clave secreta del token
 
 export const authAdminRequired = (req, res, next) => {
+  const {token} = req.cookies;
+  
+  if (!token) return res.status(401).json({ message: "Unauthorized" }); //si no hay token, devolvemos un error
+
+
   const { tokenRole } = req.cookies; //extraemos el token de las cookies
 
   if (!tokenRole) return res.status(401).json({ message: "Unauthorized" }); //si no hay token, devolvemos un error

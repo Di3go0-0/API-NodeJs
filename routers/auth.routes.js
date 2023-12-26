@@ -1,5 +1,6 @@
 import { Router } from "express"; //importamos Router de express que nos ayuda a crear las rutas
 import {
+  registerAdmin,
   register,
   login,
   logout,
@@ -17,6 +18,7 @@ router.get("/", (req, res) => {
   res.send("Hello World"); //enviamos un mensaje
 });
 
+router.post("/register-admin", authAdminRequired, validateSchema(registerSchema), registerAdmin) 
 router.post("/register", validateSchema(registerSchema), register);
 router.post("/login", validateSchema(loginSchema), login);
 router.post("/logout", logout);
